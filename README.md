@@ -12,7 +12,8 @@
   <img src="https://img.shields.io/badge/Kali%20Linux-v2026.3-E87500?style=flat-square&labelColor=000000&logo=kalilinux&logoColor=white" />
   <img src="https://img.shields.io/badge/Kernel-Linux%207.1.5-3B82F6?style=flat-square&labelColor=000000" />
   <img src="https://img.shields.io/badge/Skill-Linux-404040?style=flat-square&labelColor=C00000" />
-  <img src="https://img.shields.io/badge/Network-192.168.0.0%2F24-238F89?style=flat-square&labelColor=000000" />
+  <img src="https://img.shields.io/badge/Network-10.0.0.0%2F24-238F89?style=flat-square&labelColor=000000" />
+  <img src="https://img.shields.io/badge/Kali%20IP-10.0.0.2%2F24-E87500?style=flat-square&labelColor=000000" />
   <img src="https://img.shields.io/badge/CPU-12th%20Gen%20Intel%20i5-10B981?style=flat-square&labelColor=000000" />
   <img src="https://img.shields.io/badge/RAM-24%20GB%20DDR5-6366F1?style=flat-square&labelColor=000000" />
   <img src="https://img.shields.io/badge/Penetration%20Testing-C00000?style=flat-square&labelColor=000000&logo=kalilinux&logoColor=white" />
@@ -38,12 +39,13 @@ The main objectives of this project are:
 
 - Complete a native bare-metal installation of Kali Linux Rolling on dedicated NVMe SSD storage.
 - Optimize hardware drivers and verify system baseline specs on the Lenovo LOQ 15IAX9 platform.
-- Configure physical network interfaces (`wlan0` Wi-Fi 6 and `eth0` Gigabit Ethernet).
-- Establish reliable default gateway routing and high-speed DNS resolution.
-- Verify end-to-end network connectivity (local gateway, public IP, and domain resolution).
-- Validate the pre-installed penetration testing toolchain (Nmap, Wireshark, Burp Suite, Metasploit, Gobuster, Hydra, John, Aircrack-ng).
+- Configure network connectivity for Kali Linux.
+- Assign a consistent IP address (10.0.0.2/24) to the Kali machine.
+- Verify network connectivity and DNS resolution.
+- Verify the pre-installed penetration testing toolchain (Nmap, Wireshark, Burp Suite, Metasploit, Gobuster, Hydra, John, Aircrack-ng).
 - Implement system snapshot and recovery baseline procedures.
-- Document the entire architecture, verification commands, and troubleshooting lessons.
+- Document the complete setup process.
+- Prepare the environment for future cybersecurity projects.
 
 ---
 
@@ -85,12 +87,12 @@ This bare-metal lab provides an unconstrained, high-performance platform for aut
 | 🐉 **Security Operating System** | Kali GNU/Linux Rolling (Version 2026.3) |
 | 🐧 **Kernel Version** | Linux 7.1.5+kali-amd64 (x86_64) |
 | 🎨 **Desktop Environment** | GNOME Desktop (Wayland / X11 Session) |
-| 📡 **Wireless Interface** | `wlan0` (Native Wi-Fi 6, Monitor Mode Capable) |
-| 🔌 **Ethernet Interface** | `eth0` (Physical Gigabit RJ45 Port) |
-| 🌐 **Active IP Address** | `192.168.0.191/24` |
-| 🚪 **Default Gateway** | `192.168.0.1` |
-| 🌍 **DNS Nameservers** | `1.1.1.1`, `8.8.8.8`, `192.168.0.1` |
-| 🎯 **Target Scope** | Authorized local lab subnet, Docker target containers, TryHackMe / HackTheBox VPN |
+| 📡 **Physical Interfaces** | Native Wi-Fi 6 (`wlan0`) & Gigabit Ethernet (`eth0`) |
+| 🌐 **Network Address** | 10.0.0.0/24 |
+| 🐧 **Kali IP Address** | 10.0.0.2/24 |
+| 🚪 **Default Gateway** | 10.0.0.1 |
+| 🌍 **DNS Server** | 8.8.8.8 |
+| 🔮 **Future VM / Target Range** | 10.0.0.3–10.0.0.99 |
 
 ---
 
@@ -122,11 +124,22 @@ sudo apt autoremove -y
 
 A clean system recovery baseline was captured to preserve this configuration before initiating intrusive security tool testing.
 
-## Step 5. Network Interface & Route Configuration
-NetworkManager was configured to automatically manage both physical network adapters:
-- Wireless adapter `wlan0` connected to the local lab wireless network with dynamic DHCP IP assignment (`192.168.0.191/24`).
-- Ethernet interface `eth0` left standing by for direct physical bridging and isolated lab switch connection.
-- Gateway routing verified pointing to `192.168.0.1` with metric 600.
+## Step 5. Configure the Kali Linux Network
+
+The Kali Linux network configuration was checked and configured with a consistent IPv4 address.
+
+Example configuration:
+
+```text
+IP Address: 10.0.0.2
+Subnet Mask: 255.255.255.0
+Gateway: 10.0.0.1
+DNS: 8.8.8.8
+```
+
+A consistent IP address makes it easier to document the lab and reference the Kali machine in future exercises.
+
+![](4-screenshot-kali-network-settings.png)
 
 ## Step 6. Security Toolchain Verification
 The core penetration testing suite was verified to ensure that all required reconnaissance, web exploitation, and network inspection binaries were present in the system path (`/usr/bin/`):
@@ -139,22 +152,28 @@ done
 
 ---
 
-# 🔎 Lab Verification & Testing
+# 🔎 Lab Verification
 
-Every facet of the bare-metal environment was audited and verified through automated and manual test procedures.
+| ✅ Test                        | 🧾 Command                      | 🎯 Expected Result              |
+| ----------------------------- | ------------------------------- | ------------------------------- |
+| 🌐 Check IP address           | `ip a`                          | Correct Kali IP displayed       |
+| 📡 Test gateway               | `ping 10.0.0.1`                 | Successful replies              |
+| 🌍 Test Internet connectivity | `ping 8.8.8.8`                  | Successful replies              |
+| 🔎 Test DNS resolution        | `nslookup networkwalks.com`     | Domain resolves                 |
+| 🧰 Verify Nmap                | `nmap --version`                | Nmap version displayed          |
 
-| ✅ Test Category | 🧾 Command Executed | 🎯 Expected Result | 📊 Status |
-| :--- | :--- | :--- | :--- |
-| 💻 **Hardware Baseline** | `hostnamectl` | Lenovo LOQ 15IAX9, Kernel 7.1.5 | **PASSED** |
-| ⚡ **Processor Cores** | `lscpu \| grep 'Model name\|CPU(s):'` | 12 Cores, Intel i5-12450HX | **PASSED** |
-| 🧠 **Memory Capacity** | `free -h` | 23 GiB Available RAM | **PASSED** |
-| 💾 **Storage Status** | `df -h /` | NVMe Partition mounted at `/` | **PASSED** |
-| 🌐 **Interface IP** | `ip -br a` | `wlan0` active on `192.168.0.191/24` | **PASSED** |
-| 🚪 **Default Route** | `ip route` | Gateway `192.168.0.1` active | **PASSED** |
-| 📡 **Gateway Latency** | `ping -c 3 192.168.0.1` | 0% packet loss, RTT < 3.0 ms | **PASSED** |
-| 🌍 **Internet Transit** | `ping -c 3 1.1.1.1` | 0% packet loss, Public replies | **PASSED** |
-| 🔎 **DNS Resolution** | `ping -c 3 networkwalks.com` | Resolved to `192.232.216.135` | **PASSED** |
-| 🧰 **Nmap Engine** | `nmap --version` | Nmap 7.991 epoll engine ready | **PASSED** |
+### Example Results
+
+```text
+IP Address:
+10.0.0.2/24
+
+Gateway:
+10.0.0.1
+
+DNS:
+8.8.8.8
+```
 
 ### Hardware & System Baseline Verification
 ![](2-screenshot-hardware-specs.png)
@@ -176,17 +195,21 @@ chmod +x verify_lab.sh
 
 # 🐞 Problems Encountered & Solutions
 
-Documenting real-world engineering hurdles and their resolutions is a critical element of cybersecurity practice.
+Documenting problems is an important part of the project.
 
-## Problem 1. Wi-Fi Power Management & Interface Sleep Latency
-* **Issue:** After completing the bare-metal installation on the Lenovo LOQ laptop, the Wi-Fi card (`wlan0`) occasionally suffered brief latency spikes (50–150 ms) during idle periods due to aggressive 802.11 power-saving states.
-* **Root Cause:** Default Linux power-management policies throttle modern laptop PCIe/M.2 Wi-Fi transceivers to conserve battery.
-* **Resolution:** Disabled Wi-Fi power-saving in NetworkManager configuration:
-  ```bash
-  sudo sed -i 's/wifi.powersave = 3/wifi.powersave = 2/' /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
-  sudo systemctl restart NetworkManager
-  ```
-  Following this adjustment, ping latency stabilized to a rock-solid `< 3.0 ms` average.
+## Problem 1. Internet Connectivity After Static IP Configuration
+
+After manually configuring the IPv4 settings, Internet connectivity may fail depending on the Kali/NetworkManager configuration.
+
+One workaround used during this lab was:
+
+```bash
+sudo nmcli connection modify "Wired connection 1" ipv4.dad-timeout 0
+```
+
+The network connection was then restarted/rebooted and connectivity was tested again.
+
+> **Important:** Network interface and connection names may differ between systems. Students should first identify their actual connection name before running an `nmcli` command.
 
 ---
 
