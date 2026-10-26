@@ -1,0 +1,22 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# Temporary & Log files
+*.log
+*.tmp
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+
+# Sensitive credentials & captures
+*.cap
+*.pcap
+*.pcapng
+*.hash
+creds.txt
+loot/
