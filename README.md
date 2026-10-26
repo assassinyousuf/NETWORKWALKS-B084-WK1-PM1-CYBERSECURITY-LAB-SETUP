@@ -66,8 +66,6 @@ This bare-metal lab provides an unconstrained, high-performance platform for aut
 
 ## 🏗️ Lab Architecture
 
-![](1-screenshot-title-image.png)
-
 ### Key Architectural Advantages of Bare-Metal over Virtualization:
 1. **Raw Hardware Access:** Direct physical control of wireless and network interfaces allows RF monitor mode and raw packet crafting without hypervisor driver abstraction.
 2. **Compute Performance:** All 12 CPU cores (`Intel Core i5-12450HX`) and 24 GB DDR5 RAM are dedicated to security tasks, avoiding virtual machine CPU throttling and memory allocation limits.
